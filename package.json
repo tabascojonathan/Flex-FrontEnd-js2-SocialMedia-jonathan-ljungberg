@@ -1,0 +1,20 @@
+{
+  "name": "flex-frontend-js2-socialmedia-jonathan-ljungberg",
+  "version": "1.0.0",
+  "description": "Inlämningsuppgift för JavaScript2",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node --watch ./index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.3",
+    "firebase": "^10.8.1"
+  },
+  "devDependencies": {
+    "parcel": "^2.12.0"
+  }
+}
