@@ -2,10 +2,12 @@
   "name": "flex-frontend-js2-socialmedia-jonathan-ljungberg",
   "version": "1.0.0",
   "description": "Inlämningsuppgift för JavaScript2",
-  "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node --watch ./index.js"
+    "start": "node --watch ./index.js",
+    "dev": "parcel ./public/index.html",
+    "build": "parcel build ./src/index.html --dist-dir docs --public-url ./",
+    "clean": "del-cli ./.parcel-cache ./docs ./dist"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +17,8 @@
     "firebase": "^10.8.1"
   },
   "devDependencies": {
-    "parcel": "^2.12.0"
+    "del-cli": "^5.1.0",
+    "parcel": "^2.12.0",
+    "process": "^0.11.10"
   }
 }

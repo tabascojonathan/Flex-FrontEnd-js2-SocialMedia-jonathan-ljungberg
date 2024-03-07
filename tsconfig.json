@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+      "target": "es5", // Kompilera till ES5 för bredare webbläsarkompatibilitet
+      "module": "esnext", // Använd ES moduler
+      "strict": true, // Aktivera alla strikta typkontrollalternativ
+      "esModuleInterop": true, // Tillåter import av moduler som inte har en standard export
+      "skipLibCheck": true, // Hoppa över typkontroll för alla deklarationsfiler (*.d.ts)
+      "forceConsistentCasingInFileNames": true, // Kräver att filnamn har konsekvent casing
+      "moduleResolution": "node", // Använd Node.js-stil för modulupplösning
+      "allowJs": true, // Tillåt JavaScript-filer att bli inkluderade i projektet
+      "noEmit": true, // Instruera kompilatorn att inte producera output-filer
+      "isolatedModules": true // Säkerställ att varje fil kan kompileras separat
+    },
+    "include": ["src/**/*"], // Inkludera alla filer i src-mappen
+    "exclude": ["node_modules"] // Exkludera node_modules-mappen
+  }
+  

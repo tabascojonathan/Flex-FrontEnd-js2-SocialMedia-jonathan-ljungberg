@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Social Media Site</title>
+  </head>
+  <body>
+    <div id="app">
+      <!-- Innehållet här kommer att genereras dynamiskt med TypeScript -->
+    </div>
+    <div>
+      <h1>Social media</h1>
+    </div>
+    <div>
+        <h2>Registrera dig</h2>
+    </div>
+    <div>
+        <form id="register-form">
+           <!-- <input type="text" id="regUsername" placeholder="Användarnamn" required>-->
+            <input type="email" id="regEmail" placeholder="E-post" required>
+            <input type="password" id="regPassword" placeholder="Lösenord" required>
+            <button type="submit">Registrera</button>
+        </form>
+    </div>
+    <div id="login-container">
+      <h2>Logga In</h2>
+      <form id="login-form">
+        <div>
+          <label for="email">E-post:</label>
+          <input type="email" id="email" required />
+        </div>
+        <div>
+          <label for="password">Lösenord:</label>
+          <input type="password" id="password" required />
+        </div>
+        <button type="submit">Logga In</button>
+      </form> 
+    </div>
+
+    <script type="module" src="../src/index.ts"></script>
+  </body>
+</html>
