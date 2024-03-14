@@ -13,15 +13,26 @@
       <h1>Social media</h1>
     </div>
     <div>
-        <h2>Registrera dig</h2>
+      <h2>Registrera dig</h2>
     </div>
     <div>
-        <form id="register-form">
-           <!-- <input type="text" id="regUsername" placeholder="Användarnamn" required>-->
-            <input type="email" id="regEmail" placeholder="E-post" required>
-            <input type="password" id="regPassword" placeholder="Lösenord" required>
-            <button type="submit">Registrera</button>
-        </form>
+      <form id="register-form">
+        <!-- <input type="text" id="regUsername" placeholder="Användarnamn" required>-->
+        <input type="email" id="regEmail" placeholder="E-post" required />
+        <input
+          type="password"
+          id="regPassword"
+          placeholder="Lösenord"
+          required
+        />
+        <input
+          type="username"
+          id="username"
+          placeholder="Användarnamn"
+          required
+        />
+        <button type="submit">Registrera</button>
+      </form>
     </div>
     <div id="login-container">
       <h2>Logga In</h2>
@@ -35,7 +46,14 @@
           <input type="password" id="password" required />
         </div>
         <button type="submit">Logga In</button>
-      </form> 
+      </form>
+    </div>
+
+    <!-- Profilsektion, döljs initialt -->
+    <div id="profile-page" style="display: none">
+      <h1>Min Profil</h1>
+      <p>Välkommen, <span id="log-username"></span>!</p>
+      <button id="logout-btn">Logga Ut</button>
     </div>
 
     <script type="module" src="../src/index.ts"></script>

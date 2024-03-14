@@ -1,49 +1,54 @@
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, UserCredential, signOut, AuthError } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { firebaseConfig } from './firebase-config';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { firebaseConfig } from './firebase-config';
 
-// Initialisera Firebase
+// Initialisera Firebase-appen med din projektconfig
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Funktion för att registrera en ny användare
-export const registerUser = async (email: string, password: string) => {
+// Registrera ny användare
+export const registerUser = async (email: string, username: string, password: string): Promise<void> => {
     try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-
-        await setDoc(doc(db, "users", user.uid), {
-            password: password,
+        const userCredential: UserCredential = await createUserWithEmailAndPassword(auth, email, password);
+        
+        // Skapar användarprofil i Firestore efter framgångsrik registrering
+        await setDoc(doc(db, "users", userCredential.user.uid), {
             email: email,
-        })
-        console.log("Registrerad användare:", userCredential.user);
+            username: username
+            // Lägg till ytterligare fält här vid behov, t.ex. användarnamn
+        });
+
+        console.log("Användare registrerad med e-post:", email);
+        alert('Du är nu registrerad!');
     } catch (error) {
-        console.error("Fel vid registrering:", error);
+        const e = error as AuthError;
+        console.error("Fel vid registrering:", e.message);
+        alert(`Registreringsfel: ${e.message}`);
     }
 };
+
 
 // Funktion för att logga in en användare
-export const loginUser = async (email: string, password: string) => {
+export const loginUser = async (email: string, password: string): Promise<boolean> => {
     try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        console.log("Inloggad användare:", userCredential.user);
-
-        // Anropa funktion för att visa profilsidan här
-        showUserProfile(userCredential.user);
+        await signInWithEmailAndPassword(auth, email, password);
+        console.log("Inloggad användare:", email);
+        return true;
     } catch (error) {
-        console.error("Fel vid inloggning:", error);
-        alert("Fel vid inloggning: " + error);
+        const e = error as AuthError;
+        console.error("Fel vid inloggning:", e.message);
+        return false;
     }
 };
 
-// Funktion som uppdaterar sidan för att visa användarens profil
-const showUserProfile = (user) => {
-    // Ersätt innehållet i #app (eller motsvarande element) med profilinformation
-    const app = document.getElementById('app');
-    if (app) {
-        app.innerHTML = `<h1>Välkommen, ${user.email}</h1>`;
-        // Lägg till ytterligare profilinformation och interaktioner här
+// Funktion för att logga ut användaren
+export const logoutUser = async (): Promise<void> => {
+    try {
+        await signOut(auth);
+        console.log("Utloggad");
+    } catch (error) {
+        console.error("Fel vid utloggning:", error);
     }
 };

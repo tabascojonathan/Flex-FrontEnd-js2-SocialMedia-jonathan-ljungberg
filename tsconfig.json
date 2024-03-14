@@ -12,6 +12,6 @@
       "isolatedModules": true // Säkerställ att varje fil kan kompileras separat
     },
     "include": ["src/**/*"], // Inkludera alla filer i src-mappen
-    "exclude": ["node_modules"] // Exkludera node_modules-mappen
+    "exclude": ["node_modules", "dist"] // Exkludera node_modules-mappen
   }
   
