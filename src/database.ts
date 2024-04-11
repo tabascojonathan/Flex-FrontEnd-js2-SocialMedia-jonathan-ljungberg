@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import {  firebaseConfig } from './firebase-config'; //Importerar konfigurationen
 
 // Använd samma Firebase-konfiguration som tidigare
@@ -14,3 +14,14 @@ export const getUserPosts = async (userId: string) => {
     return postsList;
 };
 
+export const getUserInfo = async (userId: string) => {
+    const userDocRef = doc(db, "users", userId);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (userDocSnap.exists()) {
+        return userDocSnap.data(); // Returnerar hela användardokumentet
+    } else {
+        console.log("Ingen sådan användare finns!");
+        return null;
+    }
+};

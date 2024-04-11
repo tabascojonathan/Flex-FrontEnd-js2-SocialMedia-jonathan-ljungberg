@@ -142,16 +142,15 @@
       this[globalName] = mainExports;
     }
   }
-})({"fm8Gy":[function(require,module,exports) {
+})({"hA2Um":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
-var HMR_USE_SSE = false;
 module.bundle.HMR_BUNDLE_ID = "5c1b77e3b71e74eb";
 "use strict";
-/* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, HMR_USE_SSE, chrome, browser, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
+/* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
   HMRAsset,
   HMRMessage,
@@ -190,7 +189,6 @@ declare var HMR_HOST: string;
 declare var HMR_PORT: string;
 declare var HMR_ENV_HASH: string;
 declare var HMR_SECURE: boolean;
-declare var HMR_USE_SSE: boolean;
 declare var chrome: ExtensionContext;
 declare var browser: ExtensionContext;
 declare var __parcel__import__: (string) => Promise<void>;
@@ -234,8 +232,7 @@ if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== "undefined") {
         "0.0.0.0"
     ].includes(hostname) ? "wss" : "ws";
     var ws;
-    if (HMR_USE_SSE) ws = new EventSource("/__parcel_hmr");
-    else try {
+    try {
         ws = new WebSocket(protocol + "://" + hostname + (port ? ":" + port : "") + "/");
     } catch (err) {
         if (err.message) console.error(err.message);
@@ -305,14 +302,12 @@ if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== "undefined") {
             }
         }
     };
-    if (ws instanceof WebSocket) {
-        ws.onerror = function(e) {
-            if (e.message) console.error(e.message);
-        };
-        ws.onclose = function() {
-            console.warn("[parcel] \uD83D\uDEA8 Connection to the HMR server was lost");
-        };
-    }
+    ws.onerror = function(e) {
+        if (e.message) console.error(e.message);
+    };
+    ws.onclose = function() {
+        console.warn("[parcel] \uD83D\uDEA8 Connection to the HMR server was lost");
+    };
 }
 function removeErrorOverlay() {
     var overlay = document.getElementById(OVERLAY_ID);
@@ -610,20 +605,19 @@ document.addEventListener("DOMContentLoaded", ()=>{
         const loginSuccessful = await (0, _auth.loginUser)(email, password);
         if (loginSuccessful) {
             document.getElementById("login-container").style.display = "none";
+            document.getElementById("register-form").style.display = "none";
             const profilePage = document.getElementById("profile-page");
             profilePage.style.display = "block";
             const userEmailSpan = document.getElementById("email");
             userEmailSpan.textContent = email;
+            document.getElementById("username").textContent = (0, _auth.registerUser).username || "Anonym";
         } else alert("Inloggningen misslyckades. F\xf6rs\xf6k igen.");
     });
-    const showUserProfile = async (userId)=>{
-        const userInfo = await getUserInfo(userId);
-        if (userInfo) document.getElementById("username").textContent = userInfo.username; // Visa användarnamnet
-    };
     const logoutBtn = document.getElementById("logout-btn");
     logoutBtn?.addEventListener("click", async ()=>{
         await (0, _auth.logoutUser)();
         document.getElementById("login-container").style.display = "block";
+        document.getElementById("register-form").style.display = "block";
         document.getElementById("profile-page").style.display = "none";
     });
 });
@@ -678,13 +672,13 @@ const logoutUser = async ()=>{
     }
 };
 
-},{"firebase/auth":"79vzg","firebase/app":"aM3Fo","firebase/firestore":"8A4BC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./firebase-config":"fzYZN"}],"79vzg":[function(require,module,exports) {
+},{"firebase/auth":"es98w","firebase/app":"4NSDP","firebase/firestore":"d5NuS","./firebase-config":"fzYZN","@parcel/transformer-js/src/esmodule-helpers.js":"bBI1D"}],"es98w":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _auth = require("@firebase/auth");
 parcelHelpers.exportAll(_auth, exports);
 
-},{"@firebase/auth":"khbwD","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"khbwD":[function(require,module,exports) {
+},{"@firebase/auth":"31pfy","@parcel/transformer-js/src/esmodule-helpers.js":"bBI1D"}],"31pfy":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "ActionCodeOperation", ()=>(0, _index77658911Js.A));
@@ -778,7 +772,7 @@ var _logger = require("@firebase/logger");
 var _tslib = require("tslib");
 var _component = require("@firebase/component");
 
-},{"./index-77658911.js":"66ljl","@firebase/util":"ePiK6","@firebase/app":"3AcPV","@firebase/logger":"fZmft","tslib":"lRdW5","@firebase/component":"bi1VB","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"66ljl":[function(require,module,exports) {
+},{"./index-77658911.js":"aiJZf","@firebase/util":"2E3Zy","@firebase/app":"jNrTv","@firebase/logger":"fTDxv","tslib":"88r0Y","@firebase/component":"hRjG2","@parcel/transformer-js/src/esmodule-helpers.js":"bBI1D"}],"aiJZf":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "$", ()=>TwitterAuthProvider);
@@ -10079,7 +10073,7 @@ _setExternalJSProvider({
 });
 registerAuth("Browser" /* ClientPlatform.BROWSER */ );
 
-},{"@firebase/util":"ePiK6","@firebase/app":"3AcPV","@firebase/logger":"fZmft","tslib":"lRdW5","@firebase/component":"bi1VB","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ePiK6":[function(require,module,exports) {
+},{"@firebase/util":"2E3Zy","@firebase/app":"jNrTv","@firebase/logger":"fTDxv","tslib":"88r0Y","@firebase/component":"hRjG2","@parcel/transformer-js/src/esmodule-helpers.js":"bBI1D"}],"2E3Zy":[function(require,module,exports) {
 /**
  * @license
  * Copyright 2017 Google LLC
@@ -10166,7 +10160,7 @@ parcelHelpers.export(exports, "validateContextObject", ()=>validateContextObject
 parcelHelpers.export(exports, "validateIndexedDBOpenable", ()=>validateIndexedDBOpenable);
 parcelHelpers.export(exports, "validateNamespace", ()=>validateNamespace);
 var global = arguments[3];
-var process = require("d07263985281b344");
+var process = require("d7828ea804a15c69");
 const CONSTANTS = {
     /**
      * @define {boolean} Whether this is the client Node.js SDK.
@@ -11863,7 +11857,7 @@ function indicator(i) {
     else return service;
 }
 
-},{"d07263985281b344":"d5jf4","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"d5jf4":[function(require,module,exports) {
+},{"d7828ea804a15c69":"d5jf4","@parcel/transformer-js/src/esmodule-helpers.js":"bBI1D"}],"d5jf4":[function(require,module,exports) {
 // shim for using process in browser
 var process = module.exports = {};
 // cached from whatever global is present so that test runners that stub it
@@ -12008,7 +12002,7 @@ process.umask = function() {
     return 0;
 };
 
-},{}],"gkKU3":[function(require,module,exports) {
+},{}],"bBI1D":[function(require,module,exports) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -12038,7 +12032,7 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"3AcPV":[function(require,module,exports) {
+},{}],"jNrTv":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "FirebaseError", ()=>(0, _util.FirebaseError));
@@ -12884,7 +12878,7 @@ class HeartbeatStorageImpl {
  * @packageDocumentation
  */ registerCoreComponents("");
 
-},{"@firebase/component":"bi1VB","@firebase/logger":"fZmft","@firebase/util":"ePiK6","idb":"kozAz","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"bi1VB":[function(require,module,exports) {
+},{"@firebase/component":"hRjG2","@firebase/logger":"fTDxv","@firebase/util":"2E3Zy","idb":"5BjtZ","@parcel/transformer-js/src/esmodule-helpers.js":"bBI1D"}],"hRjG2":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Component", ()=>Component);
@@ -13223,7 +13217,7 @@ function isComponentEager(component) {
     }
 }
 
-},{"@firebase/util":"ePiK6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"fZmft":[function(require,module,exports) {
+},{"@firebase/util":"2E3Zy","@parcel/transformer-js/src/esmodule-helpers.js":"bBI1D"}],"fTDxv":[function(require,module,exports) {
 /**
  * @license
  * Copyright 2017 Google LLC
@@ -13402,7 +13396,7 @@ function setUserLogHandler(logCallback, options) {
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kozAz":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"bBI1D"}],"5BjtZ":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "unwrap", ()=>(0, _wrapIdbValueJs.u));
@@ -13486,7 +13480,7 @@ function getMethod(target, prop) {
         has: (target, prop)=>!!getMethod(target, prop) || oldTraps.has(target, prop)
     }));
 
-},{"./wrap-idb-value.js":"lS54k","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lS54k":[function(require,module,exports) {
+},{"./wrap-idb-value.js":"gmutj","@parcel/transformer-js/src/esmodule-helpers.js":"bBI1D"}],"gmutj":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "a", ()=>reverseTransformCache);
@@ -13652,7 +13646,7 @@ function wrap(value) {
 }
 const unwrap = (value)=>reverseTransformCache.get(value);
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lRdW5":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"bBI1D"}],"88r0Y":[function(require,module,exports) {
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
 
@@ -14191,7 +14185,7 @@ exports.default = {
     __disposeResources: __disposeResources
 };
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"aM3Fo":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"bBI1D"}],"4NSDP":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _app = require("@firebase/app");
@@ -14215,13 +14209,13 @@ var version = "10.8.1";
  * limitations under the License.
  */ (0, _app.registerVersion)(name, version, "app");
 
-},{"@firebase/app":"3AcPV","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8A4BC":[function(require,module,exports) {
+},{"@firebase/app":"jNrTv","@parcel/transformer-js/src/esmodule-helpers.js":"bBI1D"}],"d5NuS":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _firestore = require("@firebase/firestore");
 parcelHelpers.exportAll(_firestore, exports);
 
-},{"@firebase/firestore":"fkIBe","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"fkIBe":[function(require,module,exports) {
+},{"@firebase/firestore":"7TvoJ","@parcel/transformer-js/src/esmodule-helpers.js":"bBI1D"}],"7TvoJ":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "AbstractUserDataWriter", ()=>AbstractUserDataWriter);
@@ -14341,7 +14335,7 @@ var _component = require("@firebase/component");
 var _logger = require("@firebase/logger");
 var _util = require("@firebase/util");
 var _webchannelWrapper = require("@firebase/webchannel-wrapper");
-var process = require("1f357d3d806fe63b");
+var process = require("d2ea9488cf5cbd48");
 const w = "@firebase/firestore";
 /**
  * @license
@@ -14975,7 +14969,7 @@ function __PRIVATE_primitiveComparator(e, t) {
  * construct an inclusive range for indexeddb iterators.
  */ function __PRIVATE_immediateSuccessor(e) {
     // Return the input string, with an additional NUL byte appended.
-    return e + "\0";
+    return e + "\x00";
 }
 /**
  * @license
@@ -16300,7 +16294,7 @@ __PRIVATE_ListenSequence._e = -1;
     for(let t = 0; t < r; t++){
         const r = e.charAt(t);
         switch(r){
-            case "\0":
+            case "\x00":
                 n += "\x01\x10";
                 break;
             case "\x01":
@@ -16343,7 +16337,7 @@ __PRIVATE_ListenSequence._e = -1;
                 o = s : (r += s, o = r, r = ""), n.push(o);
                 break;
             case "\x10":
-                r += e.substring(i, t), r += "\0";
+                r += e.substring(i, t), r += "\x00";
                 break;
             case "\x11":
                 // The escape character can be used in the output to encode itself.
@@ -33939,7 +33933,7 @@ let Se = null;
     (0, _app.registerVersion)(w, "4.4.3", "esm2017");
 }();
 
-},{"1f357d3d806fe63b":"d5jf4","@firebase/app":"3AcPV","@firebase/component":"bi1VB","@firebase/logger":"fZmft","@firebase/util":"ePiK6","@firebase/webchannel-wrapper":"auCV6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"auCV6":[function(require,module,exports) {
+},{"d2ea9488cf5cbd48":"d5jf4","@firebase/app":"jNrTv","@firebase/component":"hRjG2","@firebase/logger":"fTDxv","@firebase/util":"2E3Zy","@firebase/webchannel-wrapper":"eti0a","@parcel/transformer-js/src/esmodule-helpers.js":"bBI1D"}],"eti0a":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "ErrorCode", ()=>ErrorCode);
@@ -36577,7 +36571,7 @@ var XhrIo = esm.XhrIo = P;
 var Md5 = esm.Md5 = S;
 var Integer = esm.Integer = T;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"fzYZN":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"bBI1D"}],"fzYZN":[function(require,module,exports) {
 // Firebase-projektets konfigurationsuppgifter
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -36592,6 +36586,6 @@ const firebaseConfig = {
     measurementId: "G-81TLN912SG"
 };
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["fm8Gy","h7u1C"], "h7u1C", "parcelRequiref0eb")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"bBI1D"}]},["hA2Um","h7u1C"], "h7u1C", "parcelRequiref0eb")
 
 //# sourceMappingURL=index.b71e74eb.js.map

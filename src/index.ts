@@ -32,10 +32,12 @@ document.addEventListener("DOMContentLoaded", () => {
         
         if (loginSuccessful) {
             document.getElementById("login-container")!.style.display = "none";
+            document.getElementById("register-form")!.style.display = "none";
             const profilePage = document.getElementById("profile-page")!;
             profilePage.style.display = "block";
             const userEmailSpan = document.getElementById("email") as HTMLSpanElement;
             userEmailSpan.textContent = email;
+            document.getElementById("username").textContent = registerUser.username || 'Anonym';
         } else {
             alert("Inloggningen misslyckades. Försök igen.");
         }
@@ -46,6 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
         await logoutUser();
 
         document.getElementById("login-container")!.style.display = "block";
+        document.getElementById("register-form")!.style.display = "block";
         document.getElementById("profile-page")!.style.display = "none";
     });
 });
