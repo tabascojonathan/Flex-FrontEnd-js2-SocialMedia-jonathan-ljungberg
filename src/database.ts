@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, doc, getDoc, addDoc, serverTimestamp } from 'firebase/firestore';
 import {  firebaseConfig } from './firebase-config'; //Importerar konfigurationen
 
 // Använd samma Firebase-konfiguration som tidigare
@@ -24,4 +24,13 @@ export const getUserInfo = async (userId: string) => {
         console.log("Ingen sådan användare finns!");
         return null;
     }
+};
+
+// Lägg till en funktion för att skapa en statusuppdatering
+export const addStatusUpdate = async (userId: string, content: string) => {
+    const postRef = await addDoc(collection(db, `users/${userId}/posts`), {
+        content: content,
+        timestamp: serverTimestamp(),
+    });
+    return postRef.id;
 };

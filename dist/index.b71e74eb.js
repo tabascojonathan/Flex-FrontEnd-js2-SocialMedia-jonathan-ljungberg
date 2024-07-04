@@ -585,6 +585,7 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 
 },{}],"h7u1C":[function(require,module,exports) {
 var _auth = require("./auth");
+var _database = require("./database");
 // Create a variable to store the registered user's information
 let registeredUser = null;
 document.getElementById("register-form")?.addEventListener("submit", async (e)=>{
@@ -636,8 +637,38 @@ document.addEventListener("DOMContentLoaded", ()=>{
         document.getElementById("profile-page").style.display = "none";
     });
 });
+// index.ts - Hantera statusuppdateringsformuläret
+document.addEventListener("DOMContentLoaded", ()=>{
+    // Användarens ID bör sättas när de loggar in
+    const userId = "anv\xe4ndarensUID";
+    const statusForm = document.getElementById("status-form");
+    statusForm?.addEventListener("submit", async (e)=>{
+        e.preventDefault();
+        const content = document.getElementById("status-content").value;
+        await (0, _database.addStatusUpdate)(userId, content);
+        // Rensa formuläret efter att statusen har postats
+        document.getElementById("status-content").value = "";
+        // Ladda om statusuppdateringar
+        loadStatusUpdates(userId);
+    });
+    // Ladda statusuppdateringar
+    const loadStatusUpdates = async (userId)=>{
+        const statusUpdatesContainer = document.getElementById("status-updates");
+        const statusUpdates = await (0, _database.getUserPosts)(userId); // Antag att denna funktion returnerar en lista av statusuppdateringar
+        if (statusUpdatesContainer) {
+            statusUpdatesContainer.innerHTML = ""; // Rensa befintligt innehåll
+            statusUpdates.forEach((update)=>{
+                const updateElement = document.createElement("div");
+                updateElement.textContent = `${update.timestamp.toDate().toLocaleString()}: ${update.content}`;
+                statusUpdatesContainer.appendChild(updateElement);
+            });
+        }
+    };
+    // Ladda statusuppdateringar vid inloggning
+    loadStatusUpdates(userId);
+});
 
-},{"./auth":"T4QwW"}],"T4QwW":[function(require,module,exports) {
+},{"./auth":"T4QwW","./database":"9JzvK"}],"T4QwW":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "registerUser", ()=>registerUser);
@@ -38670,6 +38701,41 @@ const firebaseConfig = {
     measurementId: "G-81TLN912SG"
 };
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["fm8Gy","h7u1C"], "h7u1C", "parcelRequiref0eb")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"9JzvK":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getUserPosts", ()=>getUserPosts);
+parcelHelpers.export(exports, "getUserInfo", ()=>getUserInfo);
+parcelHelpers.export(exports, "addStatusUpdate", ()=>addStatusUpdate);
+var _app = require("firebase/app");
+var _firestore = require("firebase/firestore");
+var _firebaseConfig = require("./firebase-config"); //Importerar konfigurationen
+// Använd samma Firebase-konfiguration som tidigare
+const app = (0, _app.initializeApp)((0, _firebaseConfig.firebaseConfig));
+const db = (0, _firestore.getFirestore)(app);
+const getUserPosts = async (userId)=>{
+    const postsCollection = (0, _firestore.collection)(db, `Users/${userId}/Posts`);
+    const postSnapshot = await (0, _firestore.getDocs)(postsCollection);
+    const postsList = postSnapshot.docs.map((doc)=>doc.data());
+    return postsList;
+};
+const getUserInfo = async (userId)=>{
+    const userDocRef = (0, _firestore.doc)(db, "users", userId);
+    const userDocSnap = await (0, _firestore.getDoc)(userDocRef);
+    if (userDocSnap.exists()) return userDocSnap.data(); // Returnerar hela användardokumentet
+    else {
+        console.log("Ingen s\xe5dan anv\xe4ndare finns!");
+        return null;
+    }
+};
+const addStatusUpdate = async (userId, content)=>{
+    const postRef = await (0, _firestore.addDoc)((0, _firestore.collection)(db, `users/${userId}/posts`), {
+        content: content,
+        timestamp: (0, _firestore.serverTimestamp)()
+    });
+    return postRef.id;
+};
+
+},{"firebase/app":"aM3Fo","firebase/firestore":"8A4BC","./firebase-config":"fzYZN","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["fm8Gy","h7u1C"], "h7u1C", "parcelRequiref0eb")
 
 //# sourceMappingURL=index.b71e74eb.js.map
