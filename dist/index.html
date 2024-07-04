@@ -41,9 +41,18 @@
 
     <!-- Profilsektion, döljs initialt -->
     <div id="profile-page" style="display: none">
-      <h1>Min Profil</h1>
-      <p>Välkommen, <span id="username"></span>!</p>
-      <button id="logout-btn">Logga Ut</button>
+      <h1 id="user-username">Användarnamn</h1>
+      <p id="user-email">E-post</p>
+      <p id="user-bio">Biografi</p>
+      
+      <h2>Skapa en ny statusuppdatering</h2>
+      <form id="status-form">
+        <textarea id="status-content" placeholder="Vad tänker du på?"></textarea>
+        <button type="submit">Posta</button>
+      </form>
+    
+      <h2>Dina statusuppdateringar</h2>
+      <div id="status-updates"></div>
     </div>
 
     <script src="/index.b71e74eb.js" defer=""></script>
