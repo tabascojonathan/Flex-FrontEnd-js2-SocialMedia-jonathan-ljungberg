@@ -584,10 +584,14 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 }
 
 },{}],"h7u1C":[function(require,module,exports) {
-var _auth = require("./auth");
+var _auth = require("firebase/auth");
+var _auth1 = require("./auth");
 var _database = require("./database");
-// Create a variable to store the registered user's information
+// Variabel för att lagra användarens ID
+let userId = null;
+// Variabel för att lagra registrerad användarinformation
 let registeredUser = null;
+// Hantera registrering
 document.getElementById("register-form")?.addEventListener("submit", async (e)=>{
     e.preventDefault();
     const emailInput = document.getElementById("regEmail");
@@ -596,129 +600,85 @@ document.getElementById("register-form")?.addEventListener("submit", async (e)=>
     const email = emailInput.value;
     const password = passwordInput.value;
     const username = usernameInput.value;
-    await (0, _auth.registerUser)(email, username, password);
-    // Store the registered user's details
+    await (0, _auth1.registerUser)(email, password, username);
+    // Lagra registrerad användarinformation
     registeredUser = {
         email,
         username,
         password
     };
-    // Clear input fields after registration
+    // Rensa inputfält efter registrering
     emailInput.value = "";
     passwordInput.value = "";
     usernameInput.value = "";
 });
-document.addEventListener("DOMContentLoaded", ()=>{
-    const loginForm = document.getElementById("login-form");
+// Hantera inloggning
+document.getElementById("login-form")?.addEventListener("submit", async (e)=>{
+    e.preventDefault();
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
-    loginForm?.addEventListener("submit", async (e)=>{
-        e.preventDefault();
-        const email = emailInput.value;
-        const password = passwordInput.value;
-        const loginSuccessful = await (0, _auth.loginUser)(email, password);
-        if (loginSuccessful) {
+    const email = emailInput.value;
+    const password = passwordInput.value;
+    const loginSuccessful = await (0, _auth1.loginUser)(email, password);
+    if (loginSuccessful) {
+        const user = (0, _auth.getAuth)().currentUser;
+        if (user) {
+            userId = user.uid;
             document.getElementById("login-container").style.display = "none";
             document.getElementById("register-form").style.display = "none";
             const profilePage = document.getElementById("profile-page");
             profilePage.style.display = "block";
-            const userEmailSpan = document.getElementById("email");
+            const userEmailSpan = document.getElementById("user-email");
             userEmailSpan.textContent = email;
-            // Use the stored registeredUser object to get the username
-            const usernameText = registeredUser ? registeredUser.username : "Anonym";
-            document.getElementById("username").textContent = usernameText;
-        } else alert("Inloggningen misslyckades. F\xf6rs\xf6k igen.");
-    });
-    const logoutBtn = document.getElementById("logout-btn");
-    logoutBtn?.addEventListener("click", async ()=>{
-        await (0, _auth.logoutUser)();
-        document.getElementById("login-container").style.display = "block";
-        document.getElementById("register-form").style.display = "block";
-        document.getElementById("profile-page").style.display = "none";
-    });
-});
-// index.ts - Hantera statusuppdateringsformuläret
-document.addEventListener("DOMContentLoaded", ()=>{
-    // Användarens ID bör sättas när de loggar in
-    const userId = "anv\xe4ndarensUID";
-    const statusForm = document.getElementById("status-form");
-    statusForm?.addEventListener("submit", async (e)=>{
-        e.preventDefault();
-        const content = document.getElementById("status-content").value;
-        await (0, _database.addStatusUpdate)(userId, content);
-        // Rensa formuläret efter att statusen har postats
-        document.getElementById("status-content").value = "";
-        // Ladda om statusuppdateringar
-        loadStatusUpdates(userId);
-    });
-    // Ladda statusuppdateringar
-    const loadStatusUpdates = async (userId)=>{
-        const statusUpdatesContainer = document.getElementById("status-updates");
-        const statusUpdates = await (0, _database.getUserPosts)(userId); // Antag att denna funktion returnerar en lista av statusuppdateringar
-        if (statusUpdatesContainer) {
-            statusUpdatesContainer.innerHTML = ""; // Rensa befintligt innehåll
-            statusUpdates.forEach((update)=>{
-                const updateElement = document.createElement("div");
-                updateElement.textContent = `${update.timestamp.toDate().toLocaleString()}: ${update.content}`;
-                statusUpdatesContainer.appendChild(updateElement);
-            });
+            // Hämta användarinformation från Firestore
+            const userInfo = await (0, _database.getUserInfo)(userId);
+            console.log("H\xe4mtad anv\xe4ndarinformation:", userInfo);
+            if (userInfo) {
+                document.getElementById("user-username").textContent = userInfo.username || "Anonym";
+                document.getElementById("user-email").textContent = userInfo.email || "";
+                document.getElementById("user-bio").textContent = userInfo.bio || "Ingen biografi tillg\xe4nglig.";
+            } else console.log("Anv\xe4ndarinformation kunde inte h\xe4mtas.");
+            // Ladda statusuppdateringar
+            loadStatusUpdates(userId);
         }
-    };
-    // Ladda statusuppdateringar vid inloggning
+    } else alert("Inloggningen misslyckades. F\xf6rs\xf6k igen.");
+});
+// Hantera utloggning
+document.getElementById("logout-btn")?.addEventListener("click", async ()=>{
+    await (0, _auth1.logoutUser)();
+    document.getElementById("login-container").style.display = "block";
+    document.getElementById("register-form").style.display = "block";
+    document.getElementById("profile-page").style.display = "none";
+});
+// Hantera statusuppdateringar
+document.getElementById("status-form")?.addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    if (!userId) {
+        alert("Du m\xe5ste vara inloggad f\xf6r att posta en statusuppdatering.");
+        return;
+    }
+    const content = document.getElementById("status-content").value;
+    await (0, _database.addStatusUpdate)(userId, content);
+    // Rensa formuläret efter att statusen har postats
+    document.getElementById("status-content").value = "";
+    // Ladda om statusuppdateringar
     loadStatusUpdates(userId);
 });
-
-},{"./auth":"T4QwW","./database":"9JzvK"}],"T4QwW":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "registerUser", ()=>registerUser);
-parcelHelpers.export(exports, "loginUser", ()=>loginUser);
-parcelHelpers.export(exports, "logoutUser", ()=>logoutUser);
-var _auth = require("firebase/auth");
-var _app = require("firebase/app");
-var _firestore = require("firebase/firestore");
-var _firebaseConfig = require("./firebase-config");
-// Initialisera Firebase-appen med din projektconfig
-const app = (0, _app.initializeApp)((0, _firebaseConfig.firebaseConfig));
-const auth = (0, _auth.getAuth)(app);
-const db = (0, _firestore.getFirestore)(app);
-const registerUser = async (email, username, password)=>{
-    try {
-        const userCredential = await (0, _auth.createUserWithEmailAndPassword)(auth, email, password);
-        // Skapar användarprofil i Firestore efter framgångsrik registrering
-        await (0, _firestore.setDoc)((0, _firestore.doc)(db, "users", userCredential.user.uid), {
-            email: email,
-            username: username
+// Funktion för att ladda statusuppdateringar
+const loadStatusUpdates = async (userId)=>{
+    const statusUpdatesContainer = document.getElementById("status-updates");
+    const statusUpdates = await (0, _database.getUserPosts)(userId);
+    if (statusUpdatesContainer) {
+        statusUpdatesContainer.innerHTML = ""; // Rensa befintligt innehåll
+        statusUpdates.forEach((update)=>{
+            const updateElement = document.createElement("div");
+            updateElement.textContent = `${update.timestamp.toDate().toLocaleString()}: ${update.content}`;
+            statusUpdatesContainer.appendChild(updateElement);
         });
-        console.log("Anv\xe4ndare registrerad med e-post:", email);
-        alert("Du \xe4r nu registrerad!");
-    } catch (error) {
-        const e = error;
-        console.error("Fel vid registrering:", e.message);
-        alert(`Registreringsfel: ${e.message}`);
-    }
-};
-const loginUser = async (email, password)=>{
-    try {
-        await (0, _auth.signInWithEmailAndPassword)(auth, email, password);
-        console.log("Inloggad anv\xe4ndare:", email);
-        return true;
-    } catch (error) {
-        const e = error;
-        console.error("Fel vid inloggning:", e.message);
-        return false;
-    }
-};
-const logoutUser = async ()=>{
-    try {
-        await (0, _auth.signOut)(auth);
-        console.log("Utloggad");
-    } catch (error) {
-        console.error("Fel vid utloggning:", error);
     }
 };
 
-},{"firebase/auth":"79vzg","firebase/app":"aM3Fo","firebase/firestore":"8A4BC","./firebase-config":"fzYZN","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"79vzg":[function(require,module,exports) {
+},{"firebase/auth":"79vzg","./auth":"T4QwW","./database":"9JzvK"}],"79vzg":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _auth = require("@firebase/auth");
@@ -14532,7 +14492,56 @@ exports.default = {
     __disposeResources: __disposeResources
 };
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"aM3Fo":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"T4QwW":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "registerUser", ()=>registerUser);
+parcelHelpers.export(exports, "loginUser", ()=>loginUser);
+parcelHelpers.export(exports, "logoutUser", ()=>logoutUser);
+var _app = require("firebase/app");
+var _auth = require("firebase/auth");
+var _firestore = require("firebase/firestore");
+var _firebaseConfig = require("./firebase-config");
+// Initialisera Firebase
+const app = (0, _app.initializeApp)((0, _firebaseConfig.firebaseConfig));
+const auth = (0, _auth.getAuth)(app);
+const db = (0, _firestore.getFirestore)(app);
+const registerUser = async (email, password, username)=>{
+    try {
+        const userCredential = await (0, _auth.createUserWithEmailAndPassword)(auth, email, password);
+        const user = userCredential.user;
+        // Skapa användarprofil i Firestore
+        await (0, _firestore.setDoc)((0, _firestore.doc)(db, "users", user.uid), {
+            email: email,
+            username: username,
+            bio: "",
+            profilePictureUrl: "" // Standard eller tom profilbild vid registrering
+        });
+        console.log("Anv\xe4ndare registrerad med e-post:", email);
+    } catch (error) {
+        console.error("Fel vid registrering:", error);
+    }
+};
+const loginUser = async (email, password)=>{
+    try {
+        const userCredential = await (0, _auth.signInWithEmailAndPassword)(auth, email, password);
+        console.log("Inloggad anv\xe4ndare:", userCredential.user);
+        return true;
+    } catch (error) {
+        console.error("Fel vid inloggning:", error);
+        return false;
+    }
+};
+const logoutUser = async ()=>{
+    try {
+        await (0, _auth.signOut)(auth);
+        console.log("Utloggad");
+    } catch (error) {
+        console.error("Fel vid utloggning:", error);
+    }
+};
+
+},{"firebase/app":"aM3Fo","firebase/auth":"79vzg","firebase/firestore":"8A4BC","./firebase-config":"fzYZN","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"aM3Fo":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _app = require("@firebase/app");
@@ -38707,16 +38716,19 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "getUserPosts", ()=>getUserPosts);
 parcelHelpers.export(exports, "getUserInfo", ()=>getUserInfo);
 parcelHelpers.export(exports, "addStatusUpdate", ()=>addStatusUpdate);
-var _app = require("firebase/app");
 var _firestore = require("firebase/firestore");
-var _firebaseConfig = require("./firebase-config"); //Importerar konfigurationen
-// Använd samma Firebase-konfiguration som tidigare
+var _app = require("firebase/app");
+var _firebaseConfig = require("./firebase-config"); // Importerar konfigurationen
+// Initialisera Firebase
 const app = (0, _app.initializeApp)((0, _firebaseConfig.firebaseConfig));
 const db = (0, _firestore.getFirestore)(app);
 const getUserPosts = async (userId)=>{
-    const postsCollection = (0, _firestore.collection)(db, `Users/${userId}/Posts`);
+    const postsCollection = (0, _firestore.collection)(db, `users/${userId}/posts`);
     const postSnapshot = await (0, _firestore.getDocs)(postsCollection);
-    const postsList = postSnapshot.docs.map((doc)=>doc.data());
+    const postsList = postSnapshot.docs.map((doc)=>({
+            id: doc.id,
+            ...doc.data()
+        }));
     return postsList;
 };
 const getUserInfo = async (userId)=>{
@@ -38736,6 +38748,6 @@ const addStatusUpdate = async (userId, content)=>{
     return postRef.id;
 };
 
-},{"firebase/app":"aM3Fo","firebase/firestore":"8A4BC","./firebase-config":"fzYZN","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["fm8Gy","h7u1C"], "h7u1C", "parcelRequiref0eb")
+},{"firebase/firestore":"8A4BC","firebase/app":"aM3Fo","./firebase-config":"fzYZN","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["fm8Gy","h7u1C"], "h7u1C", "parcelRequiref0eb")
 
 //# sourceMappingURL=index.b71e74eb.js.map

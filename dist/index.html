@@ -1,60 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Social Media Site</title>
-  </head>
-  <body>
-    <div id="app">
-      <!-- Innehållet här kommer att genereras dynamiskt med TypeScript -->
-    </div>
-    <div>
-      <h1>Social media</h1>
-    </div>
-    <div>
-      <form id="register-form">
-        <div>
-          <h2>Registrera dig</h2>
-        </div>
-        <!-- <input type="text" id="regUsername" placeholder="Användarnamn" required>-->
-        <input type="email" id="regEmail" placeholder="E-post" required="">
-        <input type="password" id="regPassword" placeholder="Lösenord" required="">
-        <input type="username" id="username" placeholder="Användarnamn" required="">
-        <button type="submit">Registrera</button>
-      </form>
-    </div>
+</head>
+<body>
     <div id="login-container">
-      <h2>Logga In</h2>
-      <form id="login-form">
-        <div>
-          <label for="email">E-post:</label>
-          <input type="email" id="email" required="">
-        </div>
-        <div>
-          <label for="password">Lösenord:</label>
-          <input type="password" id="password" required="">
-        </div>
-        <button type="submit">Logga In</button>
-      </form>
+        <h2>Logga In</h2>
+        <form id="login-form">
+            <input type="email" id="email" placeholder="E-post" required="">
+            <input type="password" id="password" placeholder="Lösenord" required="">
+            <button type="submit">Logga In</button>
+        </form>
     </div>
 
-    <!-- Profilsektion, döljs initialt -->
+    <div id="register-form">
+        <h2>Registrera dig</h2>
+        <form id="register-form">
+            <input type="email" id="regEmail" placeholder="E-post" required="">
+            <input type="password" id="regPassword" placeholder="Lösenord" required="">
+            <input type="text" id="username" placeholder="Användarnamn" required="">
+            <button type="submit">Registrera</button>
+        </form>
+    </div>
+
     <div id="profile-page" style="display: none">
-      <h1 id="user-username">Användarnamn</h1>
-      <p id="user-email">E-post</p>
-      <p id="user-bio">Biografi</p>
-      
-      <h2>Skapa en ny statusuppdatering</h2>
-      <form id="status-form">
-        <textarea id="status-content" placeholder="Vad tänker du på?"></textarea>
-        <button type="submit">Posta</button>
-      </form>
-    
-      <h2>Dina statusuppdateringar</h2>
-      <div id="status-updates"></div>
+        <h1>Min Profil</h1>
+        <img id="profile-picture" src="#" alt="Profilbild">
+        <p>Användarnamn: <span id="user-username"></span></p>
+        <p>E-post: <span id="user-email"></span></p>
+        <p>Biografi: <span id="user-bio"></span></p>
+        <h2>Skapa en ny statusuppdatering</h2>
+        <form id="status-form">
+            <textarea id="status-content" placeholder="Vad tänker du på?"></textarea>
+            <button type="submit">Posta</button>
+        </form>
+        <h2>Dina statusuppdateringar</h2>
+        <div id="status-updates"></div>
+        <button id="logout-btn">Logga Ut</button>
     </div>
 
     <script src="/index.b71e74eb.js" defer=""></script>
-  </body>
+</body>
 </html>

@@ -1,19 +1,29 @@
+import { getFirestore, collection, getDocs, doc, getDoc, addDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, doc, getDoc, addDoc, serverTimestamp } from 'firebase/firestore';
-import {  firebaseConfig } from './firebase-config'; //Importerar konfigurationen
+import { firebaseConfig } from './firebase-config'; // Importerar konfigurationen
 
-// Använd samma Firebase-konfiguration som tidigare
+// Initialisera Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+interface StatusUpdate {
+    id: string;
+    content: string;
+    timestamp: Timestamp;
+}
+
 // Funktion för att hämta användarposter
-export const getUserPosts = async (userId: string) => {
-    const postsCollection = collection(db, `Users/${userId}/Posts`);
+export const getUserPosts = async (userId: string): Promise<StatusUpdate[]> => {
+    const postsCollection = collection(db, `users/${userId}/posts`);
     const postSnapshot = await getDocs(postsCollection);
-    const postsList = postSnapshot.docs.map(doc => doc.data());
+    const postsList = postSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    })) as StatusUpdate[];
     return postsList;
 };
 
+// Funktion för att hämta användarinformation
 export const getUserInfo = async (userId: string) => {
     const userDocRef = doc(db, "users", userId);
     const userDocSnap = await getDoc(userDocRef);

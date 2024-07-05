@@ -1,9 +1,14 @@
+import { getAuth } from 'firebase/auth';
 import { loginUser, registerUser, logoutUser } from "./auth";
 import { getUserInfo, addStatusUpdate, getUserPosts } from "./database";
 
-// Create a variable to store the registered user's information
+// Variabel för att lagra användarens ID
+let userId: string | null = null;
+
+// Variabel för att lagra registrerad användarinformation
 let registeredUser: { email: string, username: string, password: string } | null = null;
 
+// Hantera registrering
 document.getElementById("register-form")?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const emailInput = document.getElementById("regEmail") as HTMLInputElement;
@@ -14,87 +19,94 @@ document.getElementById("register-form")?.addEventListener("submit", async (e) =
     const password = passwordInput.value;
     const username = usernameInput.value;
 
-    await registerUser(email, username, password);
+    await registerUser(email, password, username);
 
-    // Store the registered user's details
+    // Lagra registrerad användarinformation
     registeredUser = { email, username, password };
 
-    // Clear input fields after registration
+    // Rensa inputfält efter registrering
     emailInput.value = '';
     passwordInput.value = '';
     usernameInput.value = '';
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-    const loginForm = document.getElementById("login-form");
+// Hantera inloggning
+document.getElementById("login-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
     const emailInput = document.getElementById("email") as HTMLInputElement;
     const passwordInput = document.getElementById("password") as HTMLInputElement;
 
-    loginForm?.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const email = emailInput.value;
-        const password = passwordInput.value;
+    const email = emailInput.value;
+    const password = passwordInput.value;
 
-        const loginSuccessful = await loginUser(email, password);
+    const loginSuccessful = await loginUser(email, password);
 
-        if (loginSuccessful) {
+    if (loginSuccessful) {
+        const user = getAuth().currentUser;
+        if (user) {
+            userId = user.uid;
+
             document.getElementById("login-container")!.style.display = "none";
             document.getElementById("register-form")!.style.display = "none";
             const profilePage = document.getElementById("profile-page")!;
             profilePage.style.display = "block";
-            const userEmailSpan = document.getElementById("email") as HTMLSpanElement;
+            const userEmailSpan = document.getElementById("user-email") as HTMLSpanElement;
             userEmailSpan.textContent = email;
 
-            // Use the stored registeredUser object to get the username
-            const usernameText = registeredUser ? registeredUser.username : 'Anonym';
-            document.getElementById("username")!.textContent = usernameText;
-        } else {
-            alert("Inloggningen misslyckades. Försök igen.");
+            // Hämta användarinformation från Firestore
+            const userInfo = await getUserInfo(userId);
+            console.log("Hämtad användarinformation:", userInfo);
+            if (userInfo) {
+                document.getElementById("user-username")!.textContent = userInfo.username || 'Anonym';
+                document.getElementById("user-email")!.textContent = userInfo.email || '';
+                document.getElementById("user-bio")!.textContent = userInfo.bio || 'Ingen biografi tillgänglig.';
+            } else {
+                console.log("Användarinformation kunde inte hämtas.");
+            }
+
+            // Ladda statusuppdateringar
+            loadStatusUpdates(userId);
         }
-    });
-
-    const logoutBtn = document.getElementById("logout-btn");
-    logoutBtn?.addEventListener("click", async () => {
-        await logoutUser();
-
-        document.getElementById("login-container")!.style.display = "block";
-        document.getElementById("register-form")!.style.display = "block";
-        document.getElementById("profile-page")!.style.display = "none";
-    });
-    
+    } else {
+        alert("Inloggningen misslyckades. Försök igen.");
+    }
 });
 
-// index.ts - Hantera statusuppdateringsformuläret
-document.addEventListener("DOMContentLoaded", () => {
-    // Användarens ID bör sättas när de loggar in
-    const userId = "användarensUID";
+// Hantera utloggning
+document.getElementById("logout-btn")?.addEventListener("click", async () => {
+    await logoutUser();
 
-    const statusForm = document.getElementById("status-form");
-    statusForm?.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const content = (document.getElementById("status-content") as HTMLTextAreaElement).value;
-        await addStatusUpdate(userId, content);
-        // Rensa formuläret efter att statusen har postats
-        (document.getElementById("status-content") as HTMLTextAreaElement).value = "";
-        // Ladda om statusuppdateringar
-        loadStatusUpdates(userId);
-    });
+    document.getElementById("login-container")!.style.display = "block";
+    document.getElementById("register-form")!.style.display = "block";
+    document.getElementById("profile-page")!.style.display = "none";
+});
 
-    // Ladda statusuppdateringar
-    const loadStatusUpdates = async (userId: string) => {
-        const statusUpdatesContainer = document.getElementById("status-updates");
-        const statusUpdates = await getUserPosts(userId); // Antag att denna funktion returnerar en lista av statusuppdateringar
-
-        if (statusUpdatesContainer) {
-            statusUpdatesContainer.innerHTML = ""; // Rensa befintligt innehåll
-            statusUpdates.forEach((update) => {
-                const updateElement = document.createElement("div");
-                updateElement.textContent = `${update.timestamp.toDate().toLocaleString()}: ${update.content}`;
-                statusUpdatesContainer.appendChild(updateElement);
-            });
-        }
-    };
-
-    // Ladda statusuppdateringar vid inloggning
+// Hantera statusuppdateringar
+document.getElementById("status-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!userId) {
+        alert("Du måste vara inloggad för att posta en statusuppdatering.");
+        return;
+    }
+    const content = (document.getElementById("status-content") as HTMLTextAreaElement).value;
+    await addStatusUpdate(userId, content);
+    // Rensa formuläret efter att statusen har postats
+    (document.getElementById("status-content") as HTMLTextAreaElement).value = "";
+    // Ladda om statusuppdateringar
     loadStatusUpdates(userId);
 });
+
+// Funktion för att ladda statusuppdateringar
+const loadStatusUpdates = async (userId: string) => {
+    const statusUpdatesContainer = document.getElementById("status-updates");
+    const statusUpdates = await getUserPosts(userId);
+
+    if (statusUpdatesContainer) {
+        statusUpdatesContainer.innerHTML = ""; // Rensa befintligt innehåll
+        statusUpdates.forEach((update) => {
+            const updateElement = document.createElement("div");
+            updateElement.textContent = `${update.timestamp.toDate().toLocaleString()}: ${update.content}`;
+            statusUpdatesContainer.appendChild(updateElement);
+        });
+    }
+};
