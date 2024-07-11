@@ -21,10 +21,15 @@
             <input type="email" id="regEmail" placeholder="E-post" required>
             <input type="password" id="regPassword" placeholder="Lösenord" required>
             <input type="text" id="username" placeholder="Användarnamn" required>
+            <label for="profilePicture">Välj Profilbild:</label>
+            <select id="profilePicture" required>
+                <option value="gs://socialmedia-javascript2.appspot.com/Firefly_glowing+caterpillar that evolves in to a cocoon and becomes a big butterfly_photo,chaotic_11071.jpg">Image 1</option>
+                <option value="gs://socialmedia-javascript2.appspot.com/Firefly_glowing+caterpillar that evolves in to a cocoon and becomes a big butterfly_photo,chaotic_48587.jpg">Image 2</option>
+                <option value="gs://socialmedia-javascript2.appspot.com/Firefly_glowing+mushroom with a lady bug sitting on it_photo,chaotic_48587.jpg">Image 3</option>
+            </select>
             <button type="submit">Registrera</button>
         </form>
     </div>
-
     <div id="profile-page" style="display:none;">
         <h1>Min Profil</h1>
         <img id="profile-picture" src="#" alt="Profilbild">

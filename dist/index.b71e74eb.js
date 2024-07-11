@@ -597,20 +597,24 @@ document.getElementById("register-form")?.addEventListener("submit", async (e)=>
     const emailInput = document.getElementById("regEmail");
     const passwordInput = document.getElementById("regPassword");
     const usernameInput = document.getElementById("username");
+    const profilePictureSelect = document.getElementById("profilePicture");
     const email = emailInput.value;
     const password = passwordInput.value;
     const username = usernameInput.value;
-    await (0, _auth1.registerUser)(email, password, username);
+    const profilePictureUrl = profilePictureSelect.value;
+    await (0, _auth1.registerUser)(email, password, username, profilePictureUrl);
     // Lagra registrerad användarinformation
     registeredUser = {
         email,
         username,
-        password
+        password,
+        profilePictureUrl
     };
     // Rensa inputfält efter registrering
     emailInput.value = "";
     passwordInput.value = "";
     usernameInput.value = "";
+    profilePictureSelect.value = "";
 });
 // Hantera inloggning
 document.getElementById("login-form")?.addEventListener("submit", async (e)=>{
@@ -14506,7 +14510,7 @@ var _firebaseConfig = require("./firebase-config");
 const app = (0, _app.initializeApp)((0, _firebaseConfig.firebaseConfig));
 const auth = (0, _auth.getAuth)(app);
 const db = (0, _firestore.getFirestore)(app);
-const registerUser = async (email, password, username)=>{
+const registerUser = async (email, password, username, profilePictureUrl)=>{
     try {
         const userCredential = await (0, _auth.createUserWithEmailAndPassword)(auth, email, password);
         const user = userCredential.user;

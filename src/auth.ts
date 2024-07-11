@@ -9,7 +9,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 // Registrera ny användare
-export const registerUser = async (email: string, password: string, username: string) => {
+export const registerUser = async (email: string, password: string, username: string, profilePictureUrl: string) => {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;

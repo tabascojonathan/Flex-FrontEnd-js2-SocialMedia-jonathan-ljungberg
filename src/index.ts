@@ -6,7 +6,7 @@ import { getUserInfo, addStatusUpdate, getUserPosts } from "./database";
 let userId: string | null = null;
 
 // Variabel för att lagra registrerad användarinformation
-let registeredUser: { email: string, username: string, password: string } | null = null;
+let registeredUser: { email: string, username: string, password: string, profilePictureUrl: string } | null = null;
 
 // Hantera registrering
 document.getElementById("register-form")?.addEventListener("submit", async (e) => {
@@ -14,21 +14,25 @@ document.getElementById("register-form")?.addEventListener("submit", async (e) =
     const emailInput = document.getElementById("regEmail") as HTMLInputElement;
     const passwordInput = document.getElementById("regPassword") as HTMLInputElement;
     const usernameInput = document.getElementById("username") as HTMLInputElement;
+    const profilePictureSelect = document.getElementById("profilePicture") as HTMLSelectElement;
 
     const email = emailInput.value;
     const password = passwordInput.value;
     const username = usernameInput.value;
+    const profilePictureUrl = profilePictureSelect.value;
 
-    await registerUser(email, password, username);
+    await registerUser(email, password, username, profilePictureUrl);
 
     // Lagra registrerad användarinformation
-    registeredUser = { email, username, password };
+    registeredUser = { email, username, password, profilePictureUrl };
 
     // Rensa inputfält efter registrering
     emailInput.value = '';
     passwordInput.value = '';
     usernameInput.value = '';
+    profilePictureSelect.value = '';
 });
+
 
 // Hantera inloggning
 document.getElementById("login-form")?.addEventListener("submit", async (e) => {
