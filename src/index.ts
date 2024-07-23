@@ -64,6 +64,14 @@ document.getElementById("login-form")?.addEventListener("submit", async (e) => {
                 document.getElementById("user-username")!.textContent = userInfo.username || 'Anonym';
                 document.getElementById("user-email")!.textContent = userInfo.email || '';
                 document.getElementById("user-bio")!.textContent = userInfo.bio || 'Ingen biografi tillgänglig.';
+
+                                // Hantera profilbild
+                                const profilePictureElement = document.getElementById("profile-picture") as HTMLImageElement;
+                                if (userInfo.profilePictureUrl) {
+                                    profilePictureElement.src = userInfo.profilePictureUrl;
+                                } else {
+                                    profilePictureElement.src = 'fallback-profile-picture-url.jpg';
+                                }
             } else {
                 console.log("Användarinformation kunde inte hämtas.");
             }
