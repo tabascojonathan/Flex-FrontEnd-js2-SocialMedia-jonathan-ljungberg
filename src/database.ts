@@ -1,4 +1,4 @@
-import { getFirestore, collection, getDocs, doc, getDoc, addDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, doc, getDoc, addDoc, serverTimestamp, Timestamp, updateDoc, deleteDoc, query, where } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from './firebase-config'; // Importerar konfigurationen
 
@@ -43,4 +43,25 @@ export const addStatusUpdate = async (userId: string, content: string) => {
         timestamp: serverTimestamp(),
     });
     return postRef.id;
+};
+
+// Lägg till en funktion för att uppdatera biografi
+export const updateBio = async (userId: string, bio: string) => {
+    const userDocRef = doc(db, "users", userId);
+    await updateDoc(userDocRef, {
+        bio: bio
+    });
+};
+
+// Lägg till en funktion för att radera användarens data
+export const deleteUserData = async (userId: string) => {
+    // Radera användarens posts
+    const postsQuery = query(collection(db, `users/${userId}/posts`));
+    const postsSnapshot = await getDocs(postsQuery);
+    const deletePromises = postsSnapshot.docs.map(doc => deleteDoc(doc.ref));
+    await Promise.all(deletePromises);
+
+    // Radera användardokumentet
+    const userDocRef = doc(db, "users", userId);
+    await deleteDoc(userDocRef);
 };

@@ -1,0 +1,138 @@
+
+/* Reset some default browser styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    background-color: #f8f8f8;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h1, h2 {
+    color: #444;
+}
+
+h1 {
+    font-size: 2em;
+    margin-bottom: 0.5em;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin-bottom: 0.5em;
+}
+
+form {
+    margin-bottom: 1.5em;
+}
+
+input, select, textarea, button {
+    width: 50%;
+    padding: 10px;
+    margin: 5px 0 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#profile-picture {
+    width: 150px;
+    height: 150px;
+    object-fit: cover; 
+    border-radius: 50%; 
+}
+
+#profile-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.status-update {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+}
+
+.status-update:last-child {
+    border-bottom: none;
+}
+
+.logout-btn {
+    background-color: #dc3545;
+}
+
+.logout-btn:hover {
+    background-color: #c82333;
+}
+#bio-form {
+    margin-top: 1em;
+}
+
+#bio-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+#bio-form button {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+#bio-form button:hover {
+    background-color: #218838;
+}
+.delete-account-btn {
+    background-color: #9f0010;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.delete-account-btn:hover {
+    background-color: #c82333;
+}
+/* Responsive design */
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+
+    h1, h2 {
+        text-align: center;
+    }
+}

@@ -4,46 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Social Media Site</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="login-container">
-        <h2>Logga In</h2>
-        <form id="login-form">
-            <input type="email" id="email" placeholder="E-post" required />
-            <input type="password" id="password" placeholder="Lösenord" required />
-            <button type="submit">Logga In</button>
-        </form>
-    </div>
+    <div class="container">
+        <div id="login-container">
+            <h2>Logga In</h2>
+            <form id="login-form">
+                <input type="email" id="email" placeholder="E-post" required />
+                <input type="password" id="password" placeholder="Lösenord" required />
+                <button type="submit">Logga In</button>
+            </form>
+        </div>
 
-    <div id="register-form">
-        <h2>Registrera dig</h2>
-        <form id="register-form">
-            <input type="email" id="regEmail" placeholder="E-post" required>
-            <input type="password" id="regPassword" placeholder="Lösenord" required>
-            <input type="text" id="username" placeholder="Användarnamn" required>
-            <label for="profilePicture">Välj Profilbild:</label>
-            <select id="profilePicture" required>
-                <option value="puppy1.jpg">puppy 1</option>
-                <option value="puppy2.jpg">puppy 2</option>
-                <option value="puppy3.jpg">puppy 3</option>
-            </select>
-            <button type="submit">Registrera</button>
-        </form>
-    </div>
-    <div id="profile-page" style="display:none;">
-        <h1>Min Profil</h1>
-        <img id="profile-picture" src="#" alt="Profilbild">
-        <p>Användarnamn: <span id="user-username"></span></p>
-        <p>E-post: <span id="user-email"></span></p>
-        <p>Biografi: <span id="user-bio"></span></p>
-        <h2>Skapa en ny statusuppdatering</h2>
-        <form id="status-form">
-            <textarea id="status-content" placeholder="Vad tänker du på?"></textarea>
-            <button type="submit">Posta</button>
-        </form>
-        <h2>Dina statusuppdateringar</h2>
-        <div id="status-updates"></div>
-        <button id="logout-btn">Logga Ut</button>
+        <div id="register-form">
+            <h2>Registrera dig</h2>
+            <form id="register-form">
+                <input type="email" id="regEmail" placeholder="E-post" required>
+                <input type="password" id="regPassword" placeholder="Lösenord" required>
+                <input type="text" id="username" placeholder="Användarnamn" required>
+                <label for="profilePicture">Välj Profilbild:</label>
+                <select id="profilePicture" required>
+                    <option value="puppy1.jpg">puppy 1</option>
+                    <option value="puppy2.jpg">puppy 2</option>
+                    <option value="puppy3.jpg">puppy 3</option>
+                </select>
+                <button type="submit">Registrera</button>
+            </form>
+        </div>
+        
+        <div id="profile-page" style="display:none;">
+            <h1>Min Profil</h1>
+            <img id="profile-picture" src="#" alt="Profilbild">
+            <p>Användarnamn: <span id="user-username"></span></p>
+            <p>E-post: <span id="user-email"></span></p>
+            <p>Biografi: <span id="user-bio"></span></p>
+            <button id="edit-bio-btn">Ändra Biografi</button>
+            <form id="bio-form" style="display:none;">
+                <textarea id="bio-content" placeholder="Skriv din nya biografi"></textarea>
+                <button type="submit">Spara Biografi</button>
+            </form>
+            <h2>Skapa en ny statusuppdatering</h2>
+            <form id="status-form">
+                <textarea id="status-content" placeholder="Vad tänker du på?"></textarea>
+                <button type="submit">Posta</button>
+            </form>
+            <h2>Dina statusuppdateringar</h2>
+            <div id="status-updates"></div>
+            <button id="logout-btn" class="logout-btn">Logga Ut</button>
+            <button id="delete-account-btn" class="delete-account-btn">Radera Konto</button>
+        </div>
     </div>
 
     <script type="module" src="../src/index.ts"></script>

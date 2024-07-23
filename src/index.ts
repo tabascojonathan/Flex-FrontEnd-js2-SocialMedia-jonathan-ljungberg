@@ -1,6 +1,6 @@
-import { getAuth } from 'firebase/auth';
+import { getAuth, deleteUser } from 'firebase/auth';
 import { loginUser, registerUser, logoutUser } from "./auth";
-import { getUserInfo, addStatusUpdate, getUserPosts } from "./database";
+import { getUserInfo, addStatusUpdate, getUserPosts, updateBio, deleteUserData } from "./database";
 
 // Variabel för att lagra användarens ID
 let userId: string | null = null;
@@ -106,6 +106,52 @@ document.getElementById("status-form")?.addEventListener("submit", async (e) => 
     (document.getElementById("status-content") as HTMLTextAreaElement).value = "";
     // Ladda om statusuppdateringar
     loadStatusUpdates(userId);
+});
+
+// Hantera biografibyte
+document.getElementById("edit-bio-btn")?.addEventListener("click", () => {
+    document.getElementById("bio-form")!.style.display = "block";
+});
+
+document.getElementById("bio-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!userId) {
+        alert("Du måste vara inloggad för att ändra din biografi.");
+        return;
+    }
+    const bioContent = (document.getElementById("bio-content") as HTMLTextAreaElement).value;
+    await updateBio(userId, bioContent);
+    document.getElementById("user-bio")!.textContent = bioContent;
+    document.getElementById("bio-form")!.style.display = "none";
+});
+
+// Hantera radering av konto
+document.getElementById("delete-account-btn")?.addEventListener("click", async () => {
+    if (!userId) {
+        alert("Du måste vara inloggad för att radera ditt konto.");
+        return;
+    }
+
+    const confirmation = confirm("Är du säker på att du vill radera ditt konto? Detta kan inte ångras.");
+    if (confirmation) {
+        try {
+            // Radera användardata från Firestore
+            await deleteUserData(userId);
+
+            // Radera användarkonto från Authentication
+            const user = getAuth().currentUser;
+            if (user) {
+                await deleteUser(user);
+                alert("Ditt konto har raderats.");
+                document.getElementById("login-container")!.style.display = "block";
+                document.getElementById("register-form")!.style.display = "block";
+                document.getElementById("profile-page")!.style.display = "none";
+            }
+        } catch (error) {
+            console.error("Fel vid radering av konto:", error);
+            alert("Ett fel uppstod vid radering av ditt konto. Försök igen.");
+        }
+    }
 });
 
 // Funktion för att ladda statusuppdateringar

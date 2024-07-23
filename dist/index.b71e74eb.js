@@ -672,6 +672,45 @@ document.getElementById("status-form")?.addEventListener("submit", async (e)=>{
     // Ladda om statusuppdateringar
     loadStatusUpdates(userId);
 });
+// Hantera biografibyte
+document.getElementById("edit-bio-btn")?.addEventListener("click", ()=>{
+    document.getElementById("bio-form").style.display = "block";
+});
+document.getElementById("bio-form")?.addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    if (!userId) {
+        alert("Du m\xe5ste vara inloggad f\xf6r att \xe4ndra din biografi.");
+        return;
+    }
+    const bioContent = document.getElementById("bio-content").value;
+    await (0, _database.updateBio)(userId, bioContent);
+    document.getElementById("user-bio").textContent = bioContent;
+    document.getElementById("bio-form").style.display = "none";
+});
+// Hantera radering av konto
+document.getElementById("delete-account-btn")?.addEventListener("click", async ()=>{
+    if (!userId) {
+        alert("Du m\xe5ste vara inloggad f\xf6r att radera ditt konto.");
+        return;
+    }
+    const confirmation = confirm("\xc4r du s\xe4ker p\xe5 att du vill radera ditt konto? Detta kan inte \xe5ngras.");
+    if (confirmation) try {
+        // Radera användardata från Firestore
+        await (0, _database.deleteUserData)(userId);
+        // Radera användarkonto från Authentication
+        const user = (0, _auth.getAuth)().currentUser;
+        if (user) {
+            await (0, _auth.deleteUser)(user);
+            alert("Ditt konto har raderats.");
+            document.getElementById("login-container").style.display = "block";
+            document.getElementById("register-form").style.display = "block";
+            document.getElementById("profile-page").style.display = "none";
+        }
+    } catch (error) {
+        console.error("Fel vid radering av konto:", error);
+        alert("Ett fel uppstod vid radering av ditt konto. F\xf6rs\xf6k igen.");
+    }
+});
 // Funktion för att ladda statusuppdateringar
 const loadStatusUpdates = async (userId)=>{
     const statusUpdatesContainer = document.getElementById("status-updates");
@@ -41829,6 +41868,8 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "getUserPosts", ()=>getUserPosts);
 parcelHelpers.export(exports, "getUserInfo", ()=>getUserInfo);
 parcelHelpers.export(exports, "addStatusUpdate", ()=>addStatusUpdate);
+parcelHelpers.export(exports, "updateBio", ()=>updateBio);
+parcelHelpers.export(exports, "deleteUserData", ()=>deleteUserData);
 var _firestore = require("firebase/firestore");
 var _app = require("firebase/app");
 var _firebaseConfig = require("./firebase-config"); // Importerar konfigurationen
@@ -41859,6 +41900,22 @@ const addStatusUpdate = async (userId, content)=>{
         timestamp: (0, _firestore.serverTimestamp)()
     });
     return postRef.id;
+};
+const updateBio = async (userId, bio)=>{
+    const userDocRef = (0, _firestore.doc)(db, "users", userId);
+    await (0, _firestore.updateDoc)(userDocRef, {
+        bio: bio
+    });
+};
+const deleteUserData = async (userId)=>{
+    // Radera användarens posts
+    const postsQuery = (0, _firestore.query)((0, _firestore.collection)(db, `users/${userId}/posts`));
+    const postsSnapshot = await (0, _firestore.getDocs)(postsQuery);
+    const deletePromises = postsSnapshot.docs.map((doc)=>(0, _firestore.deleteDoc)(doc.ref));
+    await Promise.all(deletePromises);
+    // Radera användardokumentet
+    const userDocRef = (0, _firestore.doc)(db, "users", userId);
+    await (0, _firestore.deleteDoc)(userDocRef);
 };
 
 },{"firebase/firestore":"8A4BC","firebase/app":"aM3Fo","./firebase-config":"fzYZN","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["fm8Gy","h7u1C"], "h7u1C", "parcelRequiref0eb")
