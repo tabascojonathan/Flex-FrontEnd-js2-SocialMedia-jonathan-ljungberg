@@ -58,7 +58,7 @@ button:hover {
   background-color: #0056b3;
 }
 
-#profile-picture {
+img {
   object-fit: cover;
   border-radius: 50%;
   width: 150px;
@@ -135,13 +135,6 @@ button:hover {
 
 .user-list-item:hover {
   color: #00008b;
-}
-
-img {
-  max-width: 150px;
-  max-height: 150px;
-  margin: 0 auto;
-  display: block;
 }
 
 @media (width <= 600px) {

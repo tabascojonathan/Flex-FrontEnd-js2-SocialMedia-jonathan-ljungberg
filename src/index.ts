@@ -199,18 +199,21 @@ const loadOtherUserProfile = async (otherUserId: string) => {
     const otherUserInfo = await getUserInfo(otherUserId);
 
     if (otherUserInfo) {
-        document.getElementById("other-user-username")!.textContent = otherUserInfo.username || 'Anonym';
-        document.getElementById("other-user-email")!.textContent = otherUserInfo.email || '';
-        document.getElementById("other-user-bio")!.textContent = otherUserInfo.bio || 'Ingen biografi tillgänglig.';
-
+        const otherUserUsername = document.getElementById("other-user-username");
+        const otherUserEmail = document.getElementById("other-user-email");
+        const otherUserBio = document.getElementById("other-user-bio");
         const otherProfilePictureElement = document.getElementById("other-profile-picture") as HTMLImageElement;
-        if (otherUserInfo.profilePictureUrl && otherUserInfo.profilePictureUrl.trim() !== '') {
+        const otherStatusUpdatesContainer = document.getElementById("other-status-updates");
+
+        if (otherUserUsername) otherUserUsername.textContent = otherUserInfo.username || 'Anonym';
+        if (otherUserEmail) otherUserEmail.textContent = otherUserInfo.email || '';
+        if (otherUserBio) otherUserBio.textContent = otherUserInfo.bio || 'Ingen biografi tillgänglig.';
+        if (otherProfilePictureElement && otherUserInfo.profilePictureUrl && otherUserInfo.profilePictureUrl.trim() !== '') {
             otherProfilePictureElement.src = otherUserInfo.profilePictureUrl;
-        } else {
+        } else if (otherProfilePictureElement) {
             otherProfilePictureElement.src = 'fallback-profile-picture-url.jpg';
         }
 
-        const otherStatusUpdatesContainer = document.getElementById("other-status-updates");
         const otherUserPosts = await getUserPosts(otherUserId);
 
         if (otherStatusUpdatesContainer) {
