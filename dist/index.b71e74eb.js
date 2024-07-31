@@ -648,6 +648,8 @@ document.getElementById("login-form")?.addEventListener("submit", async (e)=>{
             } else console.log("Anv\xe4ndarinformation kunde inte h\xe4mtas.");
             // Ladda statusuppdateringar
             loadStatusUpdates(userId);
+            // Ladda användarlista
+            loadUserList();
         }
     } else alert("Inloggningen misslyckades. F\xf6rs\xf6k igen.");
 });
@@ -724,6 +726,54 @@ const loadStatusUpdates = async (userId)=>{
         });
     }
 };
+// Funktion för att ladda användarlista
+const loadUserList = async ()=>{
+    const userListContainer = document.getElementById("user-list");
+    const users = await (0, _database.getAllUsers)();
+    if (userListContainer) {
+        userListContainer.innerHTML = ""; // Rensa befintligt innehåll
+        users.forEach((user)=>{
+            const userElement = document.createElement("li");
+            userElement.textContent = user.username;
+            userElement.className = "user-list-item";
+            userElement.addEventListener("click", ()=>{
+                loadOtherUserProfile(user.id);
+            });
+            userListContainer.appendChild(userElement);
+        });
+    }
+};
+// Funktion för att ladda annan användares profil
+const loadOtherUserProfile = async (otherUserId)=>{
+    const profilePage = document.getElementById("profile-page");
+    const otherProfilePage = document.getElementById("other-profile-page");
+    if (profilePage) profilePage.style.display = "none";
+    if (otherProfilePage) otherProfilePage.style.display = "block";
+    const otherUserInfo = await (0, _database.getUserInfo)(otherUserId);
+    if (otherUserInfo) {
+        document.getElementById("other-user-username").textContent = otherUserInfo.username || "Anonym";
+        document.getElementById("other-user-email").textContent = otherUserInfo.email || "";
+        document.getElementById("other-user-bio").textContent = otherUserInfo.bio || "Ingen biografi tillg\xe4nglig.";
+        const otherProfilePictureElement = document.getElementById("other-profile-picture");
+        if (otherUserInfo.profilePictureUrl && otherUserInfo.profilePictureUrl.trim() !== "") otherProfilePictureElement.src = otherUserInfo.profilePictureUrl;
+        else otherProfilePictureElement.src = "fallback-profile-picture-url.jpg";
+        const otherStatusUpdatesContainer = document.getElementById("other-status-updates");
+        const otherUserPosts = await (0, _database.getUserPosts)(otherUserId);
+        if (otherStatusUpdatesContainer) {
+            otherStatusUpdatesContainer.innerHTML = ""; // Rensa befintligt innehåll
+            otherUserPosts.forEach((post)=>{
+                const postElement = document.createElement("div");
+                postElement.textContent = `${post.timestamp.toDate().toLocaleString()}: ${post.content}`;
+                otherStatusUpdatesContainer.appendChild(postElement);
+            });
+        }
+    }
+};
+// Hantera tillbaka-knappen på annan användares profil
+document.getElementById("back-to-profile")?.addEventListener("click", ()=>{
+    document.getElementById("profile-page").style.display = "block";
+    document.getElementById("other-profile-page").style.display = "none";
+});
 
 },{"firebase/auth":"79vzg","./auth":"T4QwW","./database":"9JzvK"}],"79vzg":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -41870,6 +41920,7 @@ parcelHelpers.export(exports, "getUserInfo", ()=>getUserInfo);
 parcelHelpers.export(exports, "addStatusUpdate", ()=>addStatusUpdate);
 parcelHelpers.export(exports, "updateBio", ()=>updateBio);
 parcelHelpers.export(exports, "deleteUserData", ()=>deleteUserData);
+parcelHelpers.export(exports, "getAllUsers", ()=>getAllUsers);
 var _firestore = require("firebase/firestore");
 var _app = require("firebase/app");
 var _firebaseConfig = require("./firebase-config"); // Importerar konfigurationen
@@ -41916,6 +41967,18 @@ const deleteUserData = async (userId)=>{
     // Radera användardokumentet
     const userDocRef = (0, _firestore.doc)(db, "users", userId);
     await (0, _firestore.deleteDoc)(userDocRef);
+};
+const getAllUsers = async ()=>{
+    const usersCollection = (0, _firestore.collection)(db, "users");
+    const usersSnapshot = await (0, _firestore.getDocs)(usersCollection);
+    const usersList = usersSnapshot.docs.map((doc)=>{
+        const data = doc.data();
+        return {
+            id: doc.id,
+            ...data
+        };
+    });
+    return usersList;
 };
 
 },{"firebase/firestore":"8A4BC","firebase/app":"aM3Fo","./firebase-config":"fzYZN","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["fm8Gy","h7u1C"], "h7u1C", "parcelRequiref0eb")

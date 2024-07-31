@@ -1,4 +1,4 @@
-import { getFirestore, collection, getDocs, doc, getDoc, addDoc, serverTimestamp, Timestamp, updateDoc, deleteDoc, query, where } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, doc, getDoc, addDoc, serverTimestamp, Timestamp, updateDoc, deleteDoc, query, } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from './firebase-config'; // Importerar konfigurationen
 
@@ -10,6 +10,13 @@ interface StatusUpdate {
     id: string;
     content: string;
     timestamp: Timestamp;
+}
+interface User {
+    id: string;
+    username: string;
+    email: string;
+    profilePictureUrl: string;
+    bio?: string;
 }
 
 // Funktion för att hämta användarposter
@@ -64,4 +71,15 @@ export const deleteUserData = async (userId: string) => {
     // Radera användardokumentet
     const userDocRef = doc(db, "users", userId);
     await deleteDoc(userDocRef);
+};
+
+// Lägg till en funktion för att hämta alla användare
+export const getAllUsers = async (): Promise<User[]> => {
+    const usersCollection = collection(db, "users");
+    const usersSnapshot = await getDocs(usersCollection);
+    const usersList: User[] = usersSnapshot.docs.map(doc => {
+        const data = doc.data() as Omit<User, 'id'>;
+        return { id: doc.id, ...data };
+    });
+    return usersList;
 };

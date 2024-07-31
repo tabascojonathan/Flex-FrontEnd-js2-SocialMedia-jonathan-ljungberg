@@ -1,6 +1,6 @@
 import { getAuth, deleteUser } from 'firebase/auth';
 import { loginUser, registerUser, logoutUser } from "./auth";
-import { getUserInfo, addStatusUpdate, getUserPosts, updateBio, deleteUserData } from "./database";
+import { getUserInfo, addStatusUpdate, getUserPosts, updateBio, deleteUserData, getAllUsers } from "./database";
 
 // Variabel för att lagra användarens ID
 let userId: string | null = null;
@@ -78,10 +78,12 @@ document.getElementById("login-form")?.addEventListener("submit", async (e) => {
 
             // Ladda statusuppdateringar
             loadStatusUpdates(userId);
-        }
-    } else {
-        alert("Inloggningen misslyckades. Försök igen.");
-    }
+// Ladda användarlista
+loadUserList();
+}
+} else {
+alert("Inloggningen misslyckades. Försök igen.");
+}
 });
 
 // Hantera utloggning
@@ -168,3 +170,61 @@ const loadStatusUpdates = async (userId: string) => {
         });
     }
 };
+
+// Funktion för att ladda användarlista
+const loadUserList = async () => {
+    const userListContainer = document.getElementById('user-list');
+    const users = await getAllUsers();
+    if (userListContainer) {
+        userListContainer.innerHTML = ""; // Rensa befintligt innehåll
+        users.forEach((user) => {
+            const userElement = document.createElement("li");
+            userElement.textContent = user.username;
+            userElement.className = "user-list-item";
+            userElement.addEventListener("click", () => {
+                loadOtherUserProfile(user.id);
+            });
+            userListContainer.appendChild(userElement);
+        });
+    }
+};
+
+// Funktion för att ladda annan användares profil
+const loadOtherUserProfile = async (otherUserId: string) => {
+    const profilePage = document.getElementById('profile-page');
+    const otherProfilePage = document.getElementById('other-profile-page');
+    if (profilePage) profilePage.style.display = "none";
+    if (otherProfilePage) otherProfilePage.style.display = "block";
+
+    const otherUserInfo = await getUserInfo(otherUserId);
+
+    if (otherUserInfo) {
+        document.getElementById("other-user-username")!.textContent = otherUserInfo.username || 'Anonym';
+        document.getElementById("other-user-email")!.textContent = otherUserInfo.email || '';
+        document.getElementById("other-user-bio")!.textContent = otherUserInfo.bio || 'Ingen biografi tillgänglig.';
+
+        const otherProfilePictureElement = document.getElementById("other-profile-picture") as HTMLImageElement;
+        if (otherUserInfo.profilePictureUrl && otherUserInfo.profilePictureUrl.trim() !== '') {
+            otherProfilePictureElement.src = otherUserInfo.profilePictureUrl;
+        } else {
+            otherProfilePictureElement.src = 'fallback-profile-picture-url.jpg';
+        }
+
+        const otherStatusUpdatesContainer = document.getElementById("other-status-updates");
+        const otherUserPosts = await getUserPosts(otherUserId);
+
+        if (otherStatusUpdatesContainer) {
+            otherStatusUpdatesContainer.innerHTML = ""; // Rensa befintligt innehåll
+            otherUserPosts.forEach((post) => {
+                const postElement = document.createElement("div");
+                postElement.textContent = `${post.timestamp.toDate().toLocaleString()}: ${post.content}`;
+                otherStatusUpdatesContainer.appendChild(postElement);
+            });
+        }
+    }
+};
+// Hantera tillbaka-knappen på annan användares profil
+document.getElementById('back-to-profile')?.addEventListener('click', () => {
+    document.getElementById('profile-page')!.style.display = 'block';
+    document.getElementById('other-profile-page')!.style.display = 'none';
+    });

@@ -127,6 +127,23 @@ button:hover {
   background-color: #c82333;
 }
 
+.user-list-item {
+  cursor: pointer;
+  color: #00f;
+  text-decoration: underline;
+}
+
+.user-list-item:hover {
+  color: #00008b;
+}
+
+img {
+  max-width: 150px;
+  max-height: 150px;
+  margin: 0 auto;
+  display: block;
+}
+
 @media (width <= 600px) {
   .container {
     padding: 10px;

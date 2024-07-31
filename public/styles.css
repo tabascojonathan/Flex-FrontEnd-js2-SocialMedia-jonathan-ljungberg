@@ -126,6 +126,23 @@ button:hover {
 .delete-account-btn:hover {
     background-color: #c82333;
 }
+.user-list-item {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+}
+
+.user-list-item:hover {
+    color: darkblue;
+}
+
+img {
+    max-width: 150px;
+    max-height: 150px;
+    display: block;
+    margin: 0 auto;
+}
+
 /* Responsive design */
 @media (max-width: 600px) {
     .container {
